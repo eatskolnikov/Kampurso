@@ -76,7 +76,11 @@ gameState = {
         gameState.images.foods = new Image();
         gameState.images.foods.src = "assets/images/foods.png";
         
+        gameState.images.campfire = new Image();
+        gameState.images.campfire.src = "assets/images/campfire.png";
+        
         gameState.CreatePeople();
+        gameState.CreateItems();
     },
 
     Clear: function() {
@@ -125,14 +129,26 @@ gameState = {
         // Draw grass 9cc978
         main.canvasWindow.fillStyle = "#9cc978";
         main.canvasWindow.fillRect( 0, 0, main.settings.width, main.settings.height );
-
-        // Draw bear
-        gameState.objBear.Draw( main.canvasWindow );
+        
+        // Draw items
+        for ( var i = 0; i < gameState.items.length; i++ ) {
+            gameState.items[i].Draw( main.canvasWindow );
+        }
 
         // Draw people
         for ( var i = 0; i < gameState.people.length; i++ ) {
             gameState.people[i].Draw( main.canvasWindow );
         }
+        
+        // Draw bear
+        gameState.objBear.Draw( main.canvasWindow );
+    },
+
+    GetDistance: function( itemA, itemB ) {
+        var dY = itemA.y - itemB.y;
+        var dX = itemA.x - itemB.x;
+        var dist = Math.sqrt( dX*dX + dY*dY );
+        return dist;
     },
 
     CreatePeople: function() {
@@ -146,39 +162,85 @@ gameState = {
                 fullWidth: 32,
                 fullHeight: 32,
                 speed: 2,
-                dir: "UP",
+                isRunning: false,
+                dir: "",
                 countdown: 20,
                 image: gameState.images.people,
+                campfire: null,
 
                 Update: function() {
                     this.Move( this.dir );
-                    
+
+                    // Run from bear
+                    var dist = gameState.GetDistance( this, gameState.objBear );
+                    if ( dist < 100 ) {
+                        this.isRunning = true;
+                        this.dir = "";
+                        
+                        if ( gameState.objBear.y < this.y ) {
+                            this.dir += "S";
+                        }
+                        else if ( gameState.objBear.y > this.y ) {
+                            this.dir += "N";
+                        }
+                        if ( gameState.objBear.x < this.x ) {
+                            this.dir += "E";
+                        }
+                        else if ( gameState.objBear.x > this.x ) {
+                            this.dir += "W";
+                        }
+                    }
+                    else
+                    {
+                        this.isRunning = false;
+                    }
+
+                    // Or update movement direction
                     this.countdown -= 1;
                     if ( this.countdown == 0 ) {
                         this.ChooseDirection();
+                        this.countdown = Math.floor( Math.random() * 10) + 10;
                     }
                 },
 
                 ChooseDirection: function() {
-                    var rand = Math.floor(Math.random() * 4);
-                    if      ( rand == 0 ) { this.dir = "UP"; }
-                    else if ( rand == 1 ) { this.dir = "DOWN"; }
-                    else if ( rand == 2 ) { this.dir = "LEFT"; }
-                    else if ( rand == 3 ) { this.dir = "RIGHT"; }
+                    var direction = Math.floor( Math.random() * 4);
+                    
+                    if ( this.campfire != null ) {
+                        this.dir = "";
+                        
+                        if ( this.campfire.y < this.y && direction == 2 ) {
+                            this.dir += "N";
+                        }
+                        if ( this.campfire.y > this.y && direction == 3 ) {
+                            this.dir += "S";
+                        }
+                        if ( this.campfire.x < this.x && direction == 0 ) {
+                            this.dir += "W";
+                        }
+                        if ( this.campfire.x > this.x && direction == 1 ) {
+                            this.dir += "E";
+                        }
+                    }
                 },
 
                 Move: function( dir ) {
-                    if ( dir == "UP" ) {
-                        this.y -= this.speed;
+                    var speed = this.speed;
+                    if ( this.isRunning ) {
+                        speed = this.speed * 2;
                     }
-                    else if ( dir == "DOWN" ) {
-                        this.y += this.speed;
+                    
+                    if ( dir.includes( "N" ) ) {
+                        this.y -= speed;
                     }
-                    else if ( dir == "LEFT" ) {
-                        this.x -= this.speed;
+                    if ( dir.includes( "S" ) ) {
+                        this.y += speed;
                     }
-                    else if ( dir == "RIGHT" ) {
-                        this.x += this.speed;
+                    if ( dir.includes( "W" ) ) {
+                        this.x -= speed;
+                    }
+                    if ( dir.includes( "E" ) ) {
+                        this.x += speed;
                     }
 
                     if ( this.y < 0 ) {
@@ -206,6 +268,39 @@ gameState = {
             person.ChooseDirection();
                 
             gameState.people.push( person );
+        }
+    },
+
+    CreateItems: function() {
+        // Generate campfires
+        for ( var c = 0; c < 5; c++ )
+        {
+            var campfire = {
+                x: Math.floor(Math.random() * 640),
+                y: Math.floor(Math.random() * 480),
+                width: 32,
+                height: 32,
+                fullWidth: 32,
+                fullHeight: 32,
+                image: gameState.images.campfire,
+
+                Draw: function( canvas ) {
+                    canvas.drawImage(
+                        this.image,
+                        0, 0, this.width, this.height,
+                        this.x, this.y,
+                        this.fullWidth, this.fullHeight );
+                }
+            };
+
+            gameState.items.push( campfire );
+        }
+
+        // Assign campfires to people
+        for ( var p = 0; p < gameState.people.length; p++ )
+        {
+            var fire = Math.floor( Math.random() * gameState.items.length);
+            gameState.people[p].campfire = gameState.items[ fire ];
         }
     }
 };
