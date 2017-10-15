@@ -14,6 +14,9 @@ main = {
         console.log( "Canvas window size: " + main.settings.width + "x" + main.settings.height );
         main.canvasWindow = pCanvasWindow;
 
+        // Initialize languages
+        main.initText();
+
         // Initialize event listeners
         window.addEventListener( "mousedown",   main.click, false );
         window.addEventListener( "keydown",     main.keydown, false );
@@ -29,6 +32,17 @@ main = {
 
     initStates : function() {
         main.states.titleState = titleState;
+    },
+
+    initText : function() {
+        LANGUAGE_TOOLS.AddLanguage( "English" );
+        LANGUAGE_TOOLS.AddLanguage( "Esperanto" );
+        
+        LANGUAGE_TOOLS.AddText( "English",      "play", "Play" );
+        LANGUAGE_TOOLS.AddText( "Esperanto",    "play", "Ludi" );
+        
+        LANGUAGE_TOOLS.AddText( "English",      "help", "Help" );
+        LANGUAGE_TOOLS.AddText( "Esperanto",    "help", "Helpi" );
     },
 
     changeState : function( name ) {

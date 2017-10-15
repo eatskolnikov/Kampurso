@@ -40,7 +40,7 @@ titleState = {
                              x: ( titleState.options.width / 2 ) - ( text.length * 9 ) / 2,
                              y: options.height - 10 } );
 
-        UI_TOOLS.CreateButton( { title: "playButton", words: "Play!",
+        UI_TOOLS.CreateButton( { title: "playButton", words: LANGUAGE_TOOLS.GetText( "English", "play" ),
                              color: "#ffffff", font: "bold 30px Courier",
                              src: "assets/images/button.png",
                              x: 100, y: options.height - 150,
@@ -51,7 +51,7 @@ titleState = {
                                  main.ChangeState( "gameState" );
                                  } } );
 
-        UI_TOOLS.CreateButton( { title: "helpButton", words: "Help!",
+        UI_TOOLS.CreateButton( { title: "helpButton", words: LANGUAGE_TOOLS.GetText( "English", "help" ),
                              color: "#ffffff", font: "bold 30px Courier",
                              src: "assets/images/button.png",
                              x: 400, y: options.height - 150,
@@ -63,7 +63,7 @@ titleState = {
                                  } } );
 
         //SONO_ILO.LudiMuzikon( "menuoMuziko" );
-        ASSET_TOOLS.PlayMusic( "title" );
+        //ASSET_TOOLS.PlayMusic( "title" );
     },
 
     Clear: function() {
