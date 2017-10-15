@@ -39,6 +39,7 @@ gameState = {
     options: {},
     images: {},
     isDone: false,
+    time: 6,
 
     people: [],
     items: [],
@@ -81,6 +82,9 @@ gameState = {
         
         gameState.CreatePeople();
         gameState.CreateItems();
+        
+        UI_TOOLS.CreateText( { title: "Time", words: gameState.time + ":00",
+                            color: "#000000", font: "bold 20px Sans-serif", x: 10, y: 30 } );
     },
 
     Clear: function() {
@@ -123,11 +127,34 @@ gameState = {
         for ( var i = 0; i < gameState.people.length; i++ ) {
             gameState.people[i].Update();
         }
+
+        // Update timer
+        gameState.time += 0.01;
+        if ( gameState.time >= 24.0 ) {
+            gameState.time = 0.0;
+        }
+
+        UI_TOOLS.UpdateText( "Time", Math.floor( gameState.time ) + ":00" );
     },
 
     Draw: function() {
         // Draw grass 9cc978
-        main.canvasWindow.fillStyle = "#9cc978";
+        if ( gameState.time <= 6 ) {
+            main.canvasWindow.fillStyle = "#0b5a6b";
+        }
+        else if ( gameState.time <= 8 ) {
+            main.canvasWindow.fillStyle = "#258e34";
+        }
+        else if ( gameState.time <= 18 ) {
+            main.canvasWindow.fillStyle = "#9cc978";
+        }
+        else if ( gameState.time <= 20 ) {
+            main.canvasWindow.fillStyle = "#258e34";
+        }
+        else {
+            main.canvasWindow.fillStyle = "#0b5a6b";
+        }
+        
         main.canvasWindow.fillRect( 0, 0, main.settings.width, main.settings.height );
         
         // Draw items
@@ -142,6 +169,9 @@ gameState = {
         
         // Draw bear
         gameState.objBear.Draw( main.canvasWindow );
+
+        // Draw UI
+        UI_TOOLS.Draw( gameState.canvas );
     },
 
     GetDistance: function( itemA, itemB ) {
