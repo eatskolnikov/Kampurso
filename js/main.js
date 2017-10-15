@@ -32,6 +32,8 @@ main = {
 
     initStates : function() {
         main.states.titleState = titleState;
+        main.states.gameState = gameState;
+        main.states.helpState = helpState;
     },
 
     initText : function() {
@@ -46,6 +48,9 @@ main = {
         
         LANGUAGE_TOOLS.AddText( "English",      "help", "Help" );
         LANGUAGE_TOOLS.AddText( "Esperanto",    "help", "Helpi" );
+        
+        LANGUAGE_TOOLS.AddText( "English",      "back", "< Back" );
+        LANGUAGE_TOOLS.AddText( "Esperanto",    "back", "< Reveni" );
     },
 
     changeState : function( name ) {
@@ -77,17 +82,20 @@ main = {
     // Events
     click : function( event )
     {
-        console.log( event );
+        if ( main.currentState == null ) { return; }
+        main.currentState.Click( event );
     },
     
     keydown : function( event )
     {
-        console.log( event );
+        if ( main.currentState == null ) { return; }
+        main.currentState.KeyPress( event );
     },
     
     keyup : function( event )
     {
-        console.log( event );
+        if ( main.currentState == null ) { return; }
+        main.currentState.KeyRelease( event );
     }
 };
 

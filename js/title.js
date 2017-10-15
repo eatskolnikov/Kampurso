@@ -43,7 +43,7 @@ titleState = {
                              width: 125, height: 75,
                              fullWidth: 125, fullHeight: 75,
                              Click: function() {
-                                 main.ChangeState( "gameState" );
+                                 main.changeState( "gameState" );
                                  } } );
 
         UI_TOOLS.CreateButton( { title: "helpButton", words: LANGUAGE_TOOLS.GetText( "English", "help" ),
@@ -54,7 +54,7 @@ titleState = {
                              width: 125, height: 75,
                              fullWidth: 125, fullHeight: 75,
                              Click: function() {
-                                 main.ChangeState( "helpState" );
+                                 main.changeState( "helpState" );
                                  } } );
 
         //SONO_ILO.LudiMuzikon( "menuoMuziko" );

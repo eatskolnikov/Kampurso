@@ -28,5 +28,11 @@ gameState = {
     },
 
     Draw: function() {
+        // Draw grass 9cc978
+        main.canvasWindow.fillStyle = "#9cc978";
+        main.canvasWindow.fillRect( 0, 0, main.settings.width, main.settings.height );
     },
+
+    ClickPlay: function() {
+    }
 };
