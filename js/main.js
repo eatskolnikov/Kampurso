@@ -65,6 +65,8 @@ main = {
     },
     
     update : function() {
+        if ( main.currentState == null ) { return; }
+        main.currentState.Update();
     },
     
     draw : function() {
