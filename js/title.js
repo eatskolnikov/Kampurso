@@ -23,16 +23,11 @@ titleState = {
                             x: 0, y: 0,
                             width: 640, height: 480,
                             fullWidth: 640, fullHeight: 480 } );
+                            
+        UI_TOOLS.CreateText( { title: "Title", words: LANGUAGE_TOOLS.GetText( "English", "title" ),
+                            color: "#000000", font: "bold 70px Sans-serif", x: 100, y: 175 } );
 
-        UI_TOOLS.CreateImage( { title: "title",
-                            src:    "assets/images/title.png",
-                            x: ( titleState.options.width / 2 ) - ( 383 / 2 ),
-                            y: 25,
-                            width: 336, height: 158,
-                            fullWidth: 336, fullHeight: 158 } );
-
-
-        UI_TOOLS.CreateText( { title: "Version", words: "v1.0", color: "#000000", font: "bold 16px Courier", x: 450, y: 175 } );
+        UI_TOOLS.CreateText( { title: "Version", words: "v1.0", color: "#000000", font: "bold 16px Sans-serif", x: 450, y: 200 } );
 
         var text = "by Rachel J. Morris (Moosader.com)";
         UI_TOOLS.CreateText( { title: "by", words: text,

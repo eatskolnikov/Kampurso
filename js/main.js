@@ -38,6 +38,9 @@ main = {
         LANGUAGE_TOOLS.AddLanguage( "English" );
         LANGUAGE_TOOLS.AddLanguage( "Esperanto" );
         
+        LANGUAGE_TOOLS.AddText( "English",      "title", "CampBear" );
+        LANGUAGE_TOOLS.AddText( "Esperanto",    "title", "Kampurso" );
+        
         LANGUAGE_TOOLS.AddText( "English",      "play", "Play" );
         LANGUAGE_TOOLS.AddText( "Esperanto",    "play", "Ludi" );
         
