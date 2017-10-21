@@ -9,6 +9,7 @@ bear = {
     fullHeight: 48,
     speed: 5,
     image: null,
+    hunger: 0,
 
     Move: function( dir ) {
         if ( dir == "UP" ) {
@@ -25,12 +26,21 @@ bear = {
         }
     },
 
+    Update: function() {
+        this.hunger += 0.1;
+    },
+
     Draw: function( canvas ) {
         canvas.drawImage(
             bear.image,
             0, 0, bear.width, bear.height,
             bear.x, bear.y,
             bear.fullWidth, bear.fullHeight );
+    },
+
+    Eat: function( value ) {
+        this.hunger -= value;
+        if ( this.hunger < 0 ) { this.hunger = 0; }
     }
 };
 
@@ -40,6 +50,7 @@ gameState = {
     images: {},
     isDone: false,
     time: 6,
+    dropFrequency: 100,
 
     people: [],
     items: [],
@@ -123,10 +134,36 @@ gameState = {
             gameState.objBear.Move( "RIGHT" );
         }
 
+        // Update bear
+        gameState.objBear.Update();
+
         // Update people
         for ( var i = 0; i < gameState.people.length; i++ ) {
             gameState.people[i].Update();
         }
+
+        var drop = Math.floor( Math.random() * gameState.dropFrequency );
+        if ( drop == 0 )
+        {
+            gameState.DropItem();
+        }
+
+        // Check collision
+        var removeMe = [];
+        for ( var i = 0; i < gameState.items.length; i++ ) {
+            if ( gameState.IsCollision( gameState.objBear, gameState.items[i] ) ) {
+                gameState.objBear.Eat( gameState.items[i].value );
+                gameState.items[i].eaten = true;
+                removeMe.push( i );
+            }
+        }
+
+        // Remove any eaten foods
+        for ( var i = 0; i < removeMe.length; i++ )
+        {
+            gameState.items.splice( removeMe[i], 1 );
+        }
+        
 
         // Update timer
         gameState.time += 0.01;
@@ -179,6 +216,38 @@ gameState = {
         var dX = itemA.x - itemB.x;
         var dist = Math.sqrt( dX*dX + dY*dY );
         return dist;
+    },
+
+    DropItem: function() {
+        // Random food type
+        var itemType = Math.floor(Math.random() * 6);
+        var itemWidthHeight = 32;
+
+        // This food belongs to somebody...
+        var personIndex = Math.floor(Math.random() * gameState.people.length);
+
+        var food = {
+            x: gameState.people[personIndex].x,
+            y: gameState.people[personIndex].y,
+            width: itemWidthHeight,
+            height: itemWidthHeight,
+            fullWidth: itemWidthHeight,
+            fullHeight: itemWidthHeight,
+            image: gameState.images.foods,
+            foodType: itemType,
+            value: 5,
+            eaten: false,
+
+            Draw: function( canvas ) {
+                canvas.drawImage(
+                    this.image,
+                    this.foodType * this.width, 0, this.width, this.height,
+                    this.x, this.y,
+                    this.fullWidth, this.fullHeight );
+            }
+        }
+        
+        gameState.items.push( food );
     },
 
     CreatePeople: function() {
@@ -332,5 +401,9 @@ gameState = {
             var fire = Math.floor( Math.random() * gameState.items.length);
             gameState.people[p].campfire = gameState.items[ fire ];
         }
+    },
+
+    IsCollision: function( obj1, obj2 ) {
+        return ( gameState.GetDistance( obj1, obj2 ) < 10 );
     }
 };
