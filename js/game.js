@@ -591,7 +591,7 @@ gameState = {
 
                 Draw: function( canvas ) {
                     var fireX = 32;
-                    if ( gameState.time > 8 && gameState.time < 20 ) {
+                    if ( gameState.time > 6 && gameState.time < 18 ) {
                         fireX = 0;
                     }
                     canvas.drawImage(
