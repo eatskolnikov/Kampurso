@@ -151,7 +151,8 @@ gameState = {
         // Check collision
         var removeMe = [];
         for ( var i = 0; i < gameState.items.length; i++ ) {
-            if ( gameState.IsCollision( gameState.objBear, gameState.items[i] ) ) {
+            if ( gameState.IsCollision( gameState.objBear, gameState.items[i] )
+                    && gameState.items[i].type == "food" ) {
                 gameState.objBear.Eat( gameState.items[i].value );
                 gameState.items[i].eaten = true;
                 removeMe.push( i );
@@ -212,8 +213,14 @@ gameState = {
     },
 
     GetDistance: function( itemA, itemB ) {
-        var dY = itemA.y - itemB.y;
-        var dX = itemA.x - itemB.x;
+        var xA = itemA.x + itemA.width / 2;
+        var xB = itemB.x + itemB.width / 2;
+        var yA = itemA.y + itemA.height / 2;
+        var yB = itemB.y + itemB.height / 2;
+        
+        var dX = xA - xB;
+        var dY = yA - yB;
+        
         var dist = Math.sqrt( dX*dX + dY*dY );
         return dist;
     },
@@ -237,6 +244,7 @@ gameState = {
             foodType: itemType,
             value: 5,
             eaten: false,
+            type: "food",
 
             Draw: function( canvas ) {
                 canvas.drawImage(
@@ -382,6 +390,7 @@ gameState = {
                 fullWidth: 32,
                 fullHeight: 32,
                 image: gameState.images.campfire,
+                type: "campfire",
 
                 Draw: function( canvas ) {
                     canvas.drawImage(
