@@ -24,6 +24,20 @@ bear = {
         else if ( dir == "RIGHT" ) {
             bear.x += bear.speed;
         }
+
+        if ( bear.x < 0 ) {
+            bear.x = 0;
+        }
+        else if ( bear.x + bear.width > 640 ) {
+            bear.x = 640 - bear.width;
+        }
+
+        if ( bear.y < gameState.minObjectY ) {
+            bear.y = gameState.minObjectY;
+        }
+        else if ( bear.y + bear.height > 480 ) {
+            bear.y = 480 - bear.height;
+        }
     },
 
     Update: function() {
@@ -51,6 +65,7 @@ gameState = {
     isDone: false,
     time: 6,
     dropFrequency: 100,
+    minObjectY: 110,
 
     people: [],
     items: [],
@@ -72,6 +87,9 @@ gameState = {
 
         gameState.images.bear = new Image();
         gameState.images.bear.src = "assets/images/bear.png";
+
+        gameState.images.sky = new Image();
+        gameState.images.sky.src = "assets/images/sky.png";
 
         gameState.objBear = bear;
         gameState.objBear.image = gameState.images.bear;
@@ -177,23 +195,33 @@ gameState = {
 
     Draw: function() {
         // Draw grass 9cc978
+        var skyY = 0;
         if ( gameState.time <= 6 ) {
             main.canvasWindow.fillStyle = "#0b5a6b";
+            skyY = 200;
         }
         else if ( gameState.time <= 8 ) {
             main.canvasWindow.fillStyle = "#258e34";
+            skyY = 100;
         }
         else if ( gameState.time <= 18 ) {
             main.canvasWindow.fillStyle = "#9cc978";
+            skyY = 0;
         }
         else if ( gameState.time <= 20 ) {
             main.canvasWindow.fillStyle = "#258e34";
+            skyY = 100;
         }
         else {
             main.canvasWindow.fillStyle = "#0b5a6b";
+            skyY = 200;
         }
         
         main.canvasWindow.fillRect( 0, 0, main.settings.width, main.settings.height );
+
+        // Draw sky
+        main.canvasWindow.drawImage( gameState.images.sky,
+            0, skyY, 640, 100, 0, 0, 640, 100 );
         
         // Draw items
         for ( var i = 0; i < gameState.items.length; i++ ) {
@@ -263,7 +291,7 @@ gameState = {
         {
             var person = {
                 x: Math.floor(Math.random() * 640),
-                y: Math.floor(Math.random() * 480),
+                y: Math.floor(Math.random() * 380) + gameState.minObjectY,
                 width: 32,
                 height: 32,
                 fullWidth: 32,
@@ -350,8 +378,8 @@ gameState = {
                         this.x += speed;
                     }
 
-                    if ( this.y < 0 ) {
-                        this.y = 0;
+                    if ( this.y < gameState.minObjectY ) {
+                        this.y = gameState.minObjectY;
                     }
                     else if ( this.y + this.height > 480 ) {
                         this.y = 480 - this.height;
@@ -384,7 +412,7 @@ gameState = {
         {
             var campfire = {
                 x: Math.floor(Math.random() * 640),
-                y: Math.floor(Math.random() * 480),
+                y: Math.floor(Math.random() * 380) + gameState.minObjectY,
                 width: 32,
                 height: 32,
                 fullWidth: 32,
